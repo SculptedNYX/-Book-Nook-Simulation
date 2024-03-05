@@ -1,6 +1,5 @@
 # -Book-Nook-Simulation
 This is my code for the System modeling and simulation 7th-week assignment
-Simulation Assignment
 
 # The problem
 A quaint bookstore, 'Book Nook,' operates with a single checkout counter. The time
@@ -15,7 +14,7 @@ customers spend at the counter for checkout follows a distribution:
 | 4 | 0.1 | 6 | 0.1 |
 | 5 | 0.1 |   |     |
 
-# Inputs: Implement interarrival and ordering time in two ways:
+# Implement interarrival and ordering time in two ways:
 1. Using exact numbers
 2. Randomly generated numbers using a random number generator (based on the given
 probability distributions).
@@ -23,7 +22,7 @@ probability distributions).
 Simulate 50 individual customers of operation for Book Nook with the current single
 checkout counter setup.
 
-# Construct the simulation table, then calculate the following:
+Construct the simulation table, then calculate the following:
 1. Average time in queue.
 2. Average time in system.
 3. Average queue length.
