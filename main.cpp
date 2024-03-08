@@ -90,7 +90,7 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 	int num_customers = sim_arr.size();
 	int cumulative_arrival_time = 0;
 
-	vector<vector<int>> t (num_customers, vector<int>(10, 0));
+	vector<vector<int>> t (num_customers+1, vector<int>(10, 0));
 	queue <int> cq;
 	int customers_in_q = 0;
 
@@ -105,15 +105,18 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 				// The iterarrival time
 				case 1:
 					t[i][j] = sim_arr[i].first;
+					t[num_customers][j] += t[i][j];
 					break;
 				// Arrival time is the cumulitve of all the arrival times + the current interarrival time
 				case 2:
 					cumulative_arrival_time += sim_arr[i].first;
 					t[i][j] = cumulative_arrival_time;
+					t[num_customers][j] += t[i][j];
 					break;
 				// Service time
 				case 3:
 					t[i][j] = sim_arr[i].second;
+					t[num_customers][j] += t[i][j];
 					break;
 				// Service time begin
 				case 4:
@@ -131,10 +134,12 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 							t[i][j] = t[i-1][7];
 						}
 					}
+					t[num_customers][j] += t[i][j];
 					break;
 				// Waiting time
 				case 5:
 					t[i][j] = waiting_time;
+					t[num_customers][j] += t[i][j];
 					break;
 				// Customers in Queue
 				case 6:	
@@ -157,14 +162,18 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 					else {
 						t[i][j] = cq.size()-1;
 					}
+					t[num_customers][j] += t[i][j];
 					break;
 				// Time service ends is the time it starts and the time itself
 				case 7:
 					t[i][j] = t[i][4] + t[i][3];
+					t[num_customers][j] += t[i][j];
 					break;
 				// Time customer spends in the system is time waited in queue plus the service time
 				case 8:
-					
+					t[i][j] = waiting_time + t[i][3];	
+					t[num_customers][j] += t[i][j];
+					break;
 				// Server idle time is the difference between the service begin for the current customer and end for the prev customer
 				case 9:
 					if(i == 0) {
@@ -173,6 +182,7 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 					else {
 						t[i][j] = t[i][4] - t[i-1][7];
 					}
+					t[num_customers][j] += t[i][j];
 					break;
 					
 			}
@@ -184,13 +194,37 @@ vector<vector<int>> generate_sim_table (vector<pair<int, int>> sim_arr) {
 
 void print_sim_table (vector<vector<int>> table) {
 	cout << "Cust\tIArr\tArr\tServ\tServBeg\tWaiting\tCIQueue\tServEnd\tTISys\tServIdle\n";
-	for (int i = 0; i < table.size(); i++) {
+	int size = table.size();
+	for (int i = 0; i < size-1; i++) {
 		for (int j = 0; j < 10; j++) {
 			cout << table[i][j] << "\t";
 		}
 		cout << endl;
 	}
-
+	// print the sum
+	cout << "Sum\t";
+	for(int j = 1; j < 10; j++) {
+		cout << table[size-1][j] << "\t";
+	}
+	cout << endl;
+	// print the avg
+	cout << "Avg\t";
+	for(int j = 1; j < 10; j++) {
+		cout << (float) table[size-1][j]/(size-1) << "\t";
+	}
+	cout << endl;
+	float sumrow = size-1;
+	cout << "Average time in queue: " << table[sumrow][5]/sumrow << endl;
+	cout << "Average time in system: " << table[sumrow][8]/sumrow << endl;
+	cout << "Average queue length: " << table[sumrow][6]/sumrow << endl;
+	cout << "Server utilization: " << (1-(float)table[sumrow][9]/(float)table[sumrow-1][7])*100 <<"%" << endl;
+	cout << "Average waiting time: " << table[sumrow][5]/sumrow << endl;
+	cout << "Probability of waitiing: " << ((float)table[sumrow][5]/(float)table[sumrow-1][7])*100 <<"%" << endl;
+	cout << "Probability of server being idle: " << ((float)table[sumrow][9]/(float)table[sumrow-1][7])*100 <<"%" << endl;
+	cout << "Average service time: " << table[sumrow][3]/sumrow << endl;
+	cout << "Average time between arrivals: " << table[sumrow][1]/sumrow << endl;
+	cout << "Average waiting time for those who wait: " << table[sumrow][5]/sumrow << endl;
+	cout << "Average time in system for the customer: " << table[sumrow][8]/sumrow << endl;
 }
 
 int main () {
