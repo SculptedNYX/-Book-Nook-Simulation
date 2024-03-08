@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <iostream>
 #include <utility>
 #include <vector>
 #include <cmath>
@@ -61,10 +60,10 @@ vector<pair<int, int>> generate_sim_arr (vector<int> r, const vector<pair<float,
 	return sim_arr;
 }
 
-// Creates an array of 50 exact values from 1->50
-vector<int> exact_inc_arr (int size) {
+// Creates an array of n exact values from 1->n
+vector<int> exact_inc_arr (int n) {
 	vector<int> a;
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < n; i++) {
 		a.emplace_back(i+1);
 	}
 
